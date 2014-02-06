@@ -1,11 +1,13 @@
 #Bash script to plot all the data files in the directory
 
 #Create plot dir
+mkdir dat
+mv *.dat dat/
 mkdir plt
 mkdir plt/bar
 mkdir plt/freq
-
-dfiles=$(ls *.dat)
+mkdir sum
+dfiles=$(ls dat/*.dat)
 
 #now, loop through, and call the python program
 i=0
@@ -21,9 +23,9 @@ do
     else
         des="$des|$temp"
     fi
-    echo $data, $temp >> description.txt
-    python plt.py $data 'Frequency' 'Vrms/rtHz'
-    mv *freq.eps plt/freq/
-    mv *.eps plt/bar/
+    echo "$data| $temp" >> sum/description.txt
+#    python plt.py $data 'Frequency' 'Vrms/rtHz'
+#    mv *freq.eps plt/freq/
+#    mv *.eps plt/bar/
 echo $des
 done
