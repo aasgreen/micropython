@@ -32,6 +32,8 @@ def total_freq(freq,power,delV,delay):
     aveV=(delV)
     out=power/(((aveV/2.)**2.)*2.*((np.sin(np.pi*freq*(delay)))**2.)/(freq**2.))
     return out
-outdata =np.vstack((data[0], total_freq(data[0],data[1]/2.-datanoise[1]/2. ,args.delV,fnumber))).T
+#outdata =np.vstack((data[0], total_freq(data[0],data[1]/2.-datanoise[1]/2. ,args.delV,fnumber))).T
+
+outdata =np.vstack((data[0], total_freq(data[0],data[1]**2. ,args.delV,fnumber))).T
 np.savetxt('%smacout.dat' %args.out, outdata)
 print "%s"%args.out
