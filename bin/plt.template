@@ -1,0 +1,23 @@
+#PROGRAM: PLT
+
+#This program will output a plot of the input data structure.
+import sys
+import os
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+import argparse
+#COMMAND LINE ARGUMENTS
+parser = argparse.ArgumentParser(description='A simple plot of the data given. Log log is default.')
+parser.add_argument('filename',help="The filename of the raw data")
+
+args=parser.parse_args()
+data=np.loadtxt(args.filename, unpack=True)
+f = plt.figure()
+p1,=plt.plot(data[0],data[1])
+plt.xlabel('xaxis')
+plt.ylabel('yaxis')
+plt.xscale('log')
+plt.yscale('log')
+plt.savefig(args.filename+".eps")
+plt.show()
