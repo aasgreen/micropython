@@ -20,6 +20,11 @@ class Mach:
         self.data = np.loadtxt(dataname,unpack=True)
         self.freq = self.data[0]
         self.fnoise = self.freqnoise()
+        self.save(self.freq,self.fnoise,self.out)
+
+    def save(self,freq,noisepower,outname):
+        np.savetxt(outname,np.vstack([freq,noisepower]).T)
+
     def sens(self, data):
         power = data[1]**2.
         freq = data[0]
@@ -27,7 +32,7 @@ class Mach:
         
     def freqnoiseFloor(self,noisefloordata):
         self.noisefloor = np.loadtxt(noisefloordata,unpack=True)
-        return sens(self.noisefloor)
+        return self.sens(self.noisefloor)
 
     def freqnoise(self):
         return np.vstack([self.data[0],self.sens(self.data)])
@@ -38,7 +43,8 @@ class Allan:
         self.gate = gatetime
         self.carrier = 3.*10**(8)/(1560. *10**(-9))
         self.m = np.unique(np.trunc(np.logspace(0,np.log(30.//(gatetime*10**-3) )/np.log(10.),num=100)))
-        self.time = self.m*self.gate*10**-3
+        self.time = np.array([i*self.gate*10**(-3) for i in range(data.size)])
+        self.tau = self.m*self.gate*10**-3
         self.normdat,self.thermfit = self.ftofracfreq()
         self.outvar = np.fromiter((np.sqrt(self.var(self.normdat,int(n))) for n in self.m),dtype=float)
 
