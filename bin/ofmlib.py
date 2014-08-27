@@ -39,19 +39,20 @@ class Mach:
 
 class Allan:
     def __init__(self, dataname, gatetime):
-        self.data = np.loadtxt(dataname, unpack=True)
+        self.name = dataname
+        self.data = np.genfromtxt(dataname, unpack=True)
         self.gate = gatetime
-        self.carrier = 3.*10**(8)/(1560. *10**(-9))
-        self.m = np.unique(np.trunc(np.logspace(0,np.log(30.//(gatetime*10**-3) )/np.log(10.),num=100)))
-        self.time = np.array([i*self.gate*10**(-3) for i in range(data.size)])
+        self.carrier = 3.*10**(8)/(1550. *10**(-9))
+        self.m = np.unique(np.trunc(np.logspace(0,np.log10(self.data.size // 10. ),num=100)))
+        #create an array for m that stops when the data can be divided into 5 sections.
+        self.time = np.array([i*self.gate*10**(-3) for i in range(self.data.size)])
         self.tau = self.m*self.gate*10**-3
         self.normdat,self.thermfit = self.ftofracfreq()
         self.outvar = np.fromiter((np.sqrt(self.var(self.normdat,int(n))) for n in self.m),dtype=float)
 
     def ftofracfreq(self):
-        time = [self.gate*i*10**(-3) for i in range(self.data.size)]
-        p = np.polyfit(time, self.data,1)
-        data_nodrift = self.data-np.polyval(p,time)
+        p = np.polyfit(self.time, self.data,1)
+        data_nodrift = self.data-np.polyval(p,self.time)
         dcarrier = np.mean(data_nodrift)
         data_frac = (data_nodrift-dcarrier)/self.carrier
         return data_frac, p
@@ -71,7 +72,7 @@ class Allan:
 
 #COMMAND LINE ARGUMENTSf 
 if __name__ =="__main__":
-            
+             
     parser = argparse.ArgumentParser(description='Creating output data from the machzender delay line frequency data setup')
     parser.add_argument('filename',help="The filename of the raw data")
     #parser.add_argument('noisenoise',help='The filename of the noise data')
